@@ -1,4 +1,5 @@
 use crate::player::Player;
+use std::ops::Index;
 
 const NUM_POCKETS: usize = 6;
 const INITIAL_STONE_COUNT: i32 = 4;
@@ -37,9 +38,13 @@ impl Board {
             Position::Store { player: Player::B } => 2 * NUM_POCKETS + 1,
         }
     }
+}
 
-    pub fn count(&self, pos: &Position) -> i32 {
-        self.data[Self::position_to_index(pos)]
+impl Index<Position> for Board {
+    type Output = i32;
+
+    fn index(&self, pos: Position) -> &Self::Output {
+        &self.data[Self::position_to_index(&pos)]
     }
 }
 
@@ -52,33 +57,33 @@ mod tests {
         let board = Board::new();
         assert_eq!(
             4,
-            board.count(&Position::Pocket {
+            board[Position::Pocket {
                 player: Player::A,
                 idx: 0
-            })
+            }]
         );
         assert_eq!(
             4,
-            board.count(&Position::Pocket {
+            board[Position::Pocket {
                 player: Player::A,
                 idx: 5
-            })
+            }]
         );
-        assert_eq!(0, board.count(&Position::Store { player: Player::A }));
+        assert_eq!(0, board[Position::Store { player: Player::A }]);
         assert_eq!(
             4,
-            board.count(&Position::Pocket {
+            board[Position::Pocket {
                 player: Player::B,
                 idx: 0
-            })
+            }]
         );
         assert_eq!(
             4,
-            board.count(&Position::Pocket {
+            board[Position::Pocket {
                 player: Player::B,
                 idx: 5
-            })
+            }]
         );
-        assert_eq!(0, board.count(&Position::Store { player: Player::B }));
+        assert_eq!(0, board[Position::Store { player: Player::B }]);
     }
 }
