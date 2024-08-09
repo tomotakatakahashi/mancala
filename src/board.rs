@@ -1,7 +1,7 @@
 use crate::player::Player;
 use std::ops::Index;
 
-const NUM_POCKETS: usize = 6;
+pub const NUM_POCKETS: usize = 6;
 const INITIAL_STONE_COUNT: i32 = 4;
 
 pub struct Board {
