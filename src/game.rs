@@ -21,13 +21,19 @@ pub fn select(board: &Board, pos: &Position) -> (Turn, Board) {
             let pos_iter = PositionIter { pos: *pos };
             board.update(pos, 0);
 
+            let mut is_last_my_store = false;
             for pos in pos_iter.take(count as usize) {
                 board.update(&pos, board[pos] + 1);
+                is_last_my_store = pos == Position::Store { player: *player };
             }
 
             (
                 Turn::InProgress {
-                    next: player.other(),
+                    next: if is_last_my_store {
+                        *player
+                    } else {
+                        player.other()
+                    },
                 },
                 board,
             )
@@ -80,7 +86,15 @@ mod tests {
 
     #[test]
     fn select_init_successive() {
-        // TODO: Add
+        let board = Board::new();
+        let (turn, _) = select(
+            &board,
+            &Position::Pocket {
+                player: Player::B,
+                idx: 2,
+            },
+        );
+        assert_eq!(Turn::InProgress { next: Player::B }, turn);
     }
 
     #[test]
