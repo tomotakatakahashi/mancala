@@ -1,4 +1,4 @@
-use crate::board::{Board, Position, PositionIter};
+use crate::board::{Board, Position, PositionIter, NUM_POCKETS};
 use crate::player::Player;
 
 #[derive(PartialEq, Debug)]
@@ -9,7 +9,6 @@ pub enum Turn {
 
 pub fn select(board: &Board, pos: &Position) -> (Turn, Board) {
     // TODO: Return an error if pos is a store.
-    // TODO: Handle the finished state.
     // TODO: Handle invalid succession of one player.
     match pos {
         Position::Store { player: _ } => panic!(),
@@ -24,6 +23,16 @@ pub fn select(board: &Board, pos: &Position) -> (Turn, Board) {
             for pos in pos_iter.take(count as usize) {
                 board.update(&pos, board[pos] + 1);
                 is_last_my_store = pos == Position::Store { player: *player };
+            }
+
+            let wins = (0..NUM_POCKETS).all(|x| {
+                board[Position::Pocket {
+                    player: *player,
+                    idx: x,
+                }] == 0
+            });
+            if wins {
+                return (Turn::Finished { winner: *player }, board);
             }
 
             (
@@ -125,6 +134,25 @@ mod tests {
 
     #[test]
     fn select_win() {
-        // TODO: Add
+        let mut board = Board::new();
+        for i in 0..NUM_POCKETS - 1 {
+            board.update(
+                &Position::Pocket {
+                    player: Player::A,
+                    idx: i,
+                },
+                0,
+            );
+        }
+
+        let (turn, _) = select(
+            &board,
+            &Position::Pocket {
+                player: Player::A,
+                idx: NUM_POCKETS - 1,
+            },
+        );
+
+        assert_eq!(Turn::Finished { winner: Player::A }, turn);
     }
 }
