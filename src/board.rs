@@ -8,9 +8,39 @@ pub struct Board {
     data: [i32; ((NUM_POCKETS + 1) * 2) as usize],
 }
 
+#[derive(Clone, PartialEq, Debug, Copy)]
 pub enum Position {
     Store { player: Player },
     Pocket { player: Player, idx: usize },
+}
+
+struct PositionIter {
+    pos: Position,
+}
+
+impl Iterator for PositionIter {
+    type Item = Position;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let next = match self.pos {
+            Position::Pocket { player, idx } => {
+                if idx == NUM_POCKETS - 1 {
+                    Position::Store { player: player }
+                } else {
+                    Position::Pocket {
+                        player: player,
+                        idx: idx + 1,
+                    }
+                }
+            }
+            Position::Store { player } => Position::Pocket {
+                player: player.other(),
+                idx: 0,
+            },
+        };
+        self.pos = next;
+        return Some(next);
+    }
 }
 
 impl Board {
@@ -51,6 +81,37 @@ impl Index<Position> for Board {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn position_iterator() {
+        let mut iter = PositionIter {
+            pos: Position::Pocket {
+                player: Player::A,
+                idx: 0,
+            },
+        };
+        assert_eq!(
+            Position::Pocket {
+                player: Player::A,
+                idx: 1
+            },
+            iter.next().unwrap()
+        );
+
+        let mut iter = iter.skip(NUM_POCKETS - 2);
+        assert_eq!(Position::Store { player: Player::A }, iter.next().unwrap());
+
+        assert_eq!(
+            Position::Pocket {
+                player: Player::B,
+                idx: 0
+            },
+            iter.next().unwrap()
+        );
+
+        let mut iter = iter.skip(NUM_POCKETS - 1);
+        assert_eq!(Position::Store { player: Player::B }, iter.next().unwrap());
+    }
 
     #[test]
     fn count_initial() {
