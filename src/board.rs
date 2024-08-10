@@ -4,18 +4,14 @@ use std::ops::Index;
 pub const NUM_POCKETS: usize = 6;
 const INITIAL_STONE_COUNT: i32 = 4;
 
-pub struct Board {
-    data: [i32; ((NUM_POCKETS + 1) * 2) as usize],
-}
-
 #[derive(Clone, PartialEq, Debug, Copy)]
 pub enum Position {
     Store { player: Player },
     Pocket { player: Player, idx: usize },
 }
 
-struct PositionIter {
-    pos: Position,
+pub struct PositionIter {
+    pub pos: Position,
 }
 
 impl Iterator for PositionIter {
@@ -43,6 +39,11 @@ impl Iterator for PositionIter {
     }
 }
 
+#[derive(Clone)]
+pub struct Board {
+    pub data: [i32; ((NUM_POCKETS + 1) * 2) as usize],
+}
+
 impl Board {
     pub fn new() -> Self {
         let mut data = [0; (NUM_POCKETS + 1) * 2];
@@ -67,6 +68,10 @@ impl Board {
             } => NUM_POCKETS + 1 + idx,
             Position::Store { player: Player::B } => 2 * NUM_POCKETS + 1,
         }
+    }
+
+    pub fn update(&mut self, pos: &Position, count: i32) {
+        self.data[Self::position_to_index(pos)] = count
     }
 }
 
