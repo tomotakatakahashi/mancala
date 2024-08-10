@@ -42,6 +42,10 @@ mod tests {
     #[test]
     fn select_init_normal() {
         let board = Board::new();
+        let orig_count = board[Position::Pocket {
+            player: Player::A,
+            idx: 0,
+        }];
         let (turn, board) = select(
             &board,
             &Position::Pocket {
@@ -56,6 +60,20 @@ mod tests {
             board[Position::Pocket {
                 player: Player::A,
                 idx: 0
+            }]
+        );
+        assert_eq!(
+            5,
+            board[Position::Pocket {
+                player: Player::A,
+                idx: orig_count as usize,
+            }]
+        );
+        assert_eq!(
+            4,
+            board[Position::Pocket {
+                player: Player::A,
+                idx: (orig_count + 1) as usize,
             }]
         );
     }
