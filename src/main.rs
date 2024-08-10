@@ -10,6 +10,8 @@ use mancala::player::Player;
 use std::io;
  */
 
+// TODO: add menu plugin and result plugin
+
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(WindowPlugin {
@@ -36,7 +38,9 @@ fn main() {
         .insert_resource(Score(0))
         .insert_resource(ClearColor(BACKGROUND_COLOR))
         .add_event::<CollisionEvent>()
+        */
         .add_systems(Startup, setup)
+        /*
         // Add our gameplay simulation systems to the fixed timestep schedule
         // which runs at 64 Hz by default
         .add_systems(
@@ -53,6 +57,13 @@ fn main() {
         .add_systems(Update, update_scoreboard)
         */
         .run();
+}
+
+fn setup(mut commands: Commands) {
+    // Spawn a 2D camera
+    commands.spawn(Camera2dBundle::default());
+
+    // TODO: Add board
 }
 
 /*
