@@ -13,12 +13,12 @@ pub fn select(board: &Board, pos: &Position) -> (Turn, Board) {
     // TODO: Handle the finished state.
     // TODO: Handle invalid succession of one player.
     match pos {
-        Position::Store { player } => panic!(),
-        Position::Pocket { player, idx } => {
+        Position::Store { player: _ } => panic!(),
+        Position::Pocket { player, idx: _ } => {
             let count = board[*pos];
 
             let mut board = board.clone();
-            let mut pos_iter = PositionIter { pos: *pos };
+            let pos_iter = PositionIter { pos: *pos };
             board.update(pos, 0);
 
             for pos in pos_iter.take(count as usize) {
@@ -75,7 +75,7 @@ mod tests {
             },
             100,
         );
-        let (turn, board) = select(
+        let (_, board) = select(
             &board,
             &Position::Pocket {
                 player: Player::A,
