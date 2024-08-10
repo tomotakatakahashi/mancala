@@ -67,7 +67,29 @@ mod tests {
 
     #[test]
     fn select_init_backfire() {
-        //TODO: Add
+        let mut board = Board::new();
+        board.update(
+            &Position::Pocket {
+                player: Player::A,
+                idx: 0,
+            },
+            100,
+        );
+        let (turn, board) = select(
+            &board,
+            &Position::Pocket {
+                player: Player::A,
+                idx: 0,
+            },
+        );
+
+        assert_ne!(
+            0,
+            board[Position::Pocket {
+                player: Player::A,
+                idx: 0
+            }]
+        );
     }
 
     #[test]
