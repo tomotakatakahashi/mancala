@@ -1,9 +1,61 @@
 mod cliio;
+use bevy::{
+    prelude::*,
+    window::{WindowMode, WindowResolution},
+};
+/*
 use mancala::board::{Board, Position, NUM_POCKETS};
 use mancala::game::{select, Turn};
 use mancala::player::Player;
 use std::io;
+ */
 
+fn main() {
+    App::new()
+        .add_plugins(DefaultPlugins.set(WindowPlugin {
+            primary_window: Some(Window {
+                resolution: WindowResolution::new(512.0, 288.0), // 16:9
+                resizable: false,
+                mode: WindowMode::Windowed,
+                // TODO: Restore this for mobile devices
+                // mode: WindowMode::BorderlessFullscreen,
+                // on iOS, gestures must be enabled.
+                // This doesn't work on Android
+                recognize_rotation_gesture: true,
+                ..default()
+            }),
+            ..default()
+        }))
+        /*
+        .add_plugins(
+            stepping::SteppingPlugin::default()
+                .add_schedule(Update)
+                .add_schedule(FixedUpdate)
+                .at(Val::Percent(35.0), Val::Percent(50.0)),
+        )
+        .insert_resource(Score(0))
+        .insert_resource(ClearColor(BACKGROUND_COLOR))
+        .add_event::<CollisionEvent>()
+        .add_systems(Startup, setup)
+        // Add our gameplay simulation systems to the fixed timestep schedule
+        // which runs at 64 Hz by default
+        .add_systems(
+            FixedUpdate,
+            (
+                apply_velocity,
+                move_paddle,
+                check_for_collisions,
+                play_collision_sound,
+            )
+                // `chain`ing systems together runs them in order
+                .chain(),
+        )
+        .add_systems(Update, update_scoreboard)
+        */
+        .run();
+}
+
+/*
 fn get_input() -> usize {
     let mut cmd = String::new();
     io::stdin()
@@ -46,3 +98,4 @@ fn main() {
         }
     }
 }
+ */
