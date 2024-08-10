@@ -9,7 +9,6 @@ pub enum Turn {
 
 pub fn select(board: &Board, pos: &Position) -> (Turn, Board) {
     // TODO: Return an error if pos is a store.
-    // TODO: Handle the special pattern of retry.
     // TODO: Handle the finished state.
     // TODO: Handle invalid succession of one player.
     match pos {
