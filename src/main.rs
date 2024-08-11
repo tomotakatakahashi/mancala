@@ -3,6 +3,7 @@ use bevy::{
     prelude::*,
     window::{WindowMode, WindowResolution},
 };
+use mancala::board::NUM_POCKETS;
 /*
 use mancala::board::{Board, Position, NUM_POCKETS};
 use mancala::game::{select, Turn};
@@ -12,11 +13,15 @@ use std::io;
 
 // TODO: add menu plugin and result plugin
 
+// 16:9
+const WINDOW_X: f32 = 512.0;
+const WINDOW_Y: f32 = 288.0;
+
 fn main() {
     App::new()
         .add_plugins(DefaultPlugins.set(WindowPlugin {
             primary_window: Some(Window {
-                resolution: WindowResolution::new(512.0, 288.0), // 16:9
+                resolution: WindowResolution::new(WINDOW_X, WINDOW_Y),
                 resizable: false,
                 mode: WindowMode::Windowed,
                 // TODO: Restore this for mobile devices
@@ -63,7 +68,44 @@ fn setup(mut commands: Commands) {
     // Spawn a 2D camera
     commands.spawn(Camera2dBundle::default());
 
-    // TODO: Add board
+    let pocket_size = WINDOW_X / (NUM_POCKETS + 2) as f32;
+    let margin = 2.0;
+    let color = Color::srgb(0.5, 0.5, 1.0);
+
+    // Stores
+    for i in [-1., 1.] {
+        commands.spawn(SpriteBundle {
+            sprite: Sprite {
+                color: color,
+                ..default()
+            },
+            transform: Transform {
+                translation: Vec2::new(i * (-WINDOW_X / 2. + pocket_size / 2.), 0.).extend(0.0),
+                scale: Vec3::new(pocket_size - margin, 2. * pocket_size - margin, 0.0),
+                ..default()
+            },
+            ..default()
+        });
+    }
+
+    // pockets
+    for i in 0..NUM_POCKETS {
+        for j in [-1., 1.] {
+            let center_x = -WINDOW_X / 2. + ((i + 1) as f32 * pocket_size) + pocket_size / 2.;
+            commands.spawn(SpriteBundle {
+                sprite: Sprite {
+                    color: color,
+                    ..default()
+                },
+                transform: Transform {
+                    translation: Vec2::new(center_x, j * pocket_size / 2.).extend(0.),
+                    scale: Vec3::new(pocket_size - margin, pocket_size - margin, 0.0),
+                    ..default()
+                },
+                ..default()
+            });
+        }
+    }
 }
 
 /*
