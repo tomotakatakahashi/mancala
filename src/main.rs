@@ -1,7 +1,7 @@
 mod cliio;
 use bevy::{
     prelude::*,
-    window::{WindowMode, WindowResolution},
+    window::{PrimaryWindow, WindowMode, WindowResolution},
 };
 use mancala::board::NUM_POCKETS;
 /*
@@ -45,6 +45,7 @@ fn main() {
         .add_event::<CollisionEvent>()
         */
         .add_systems(Startup, setup)
+        .add_systems(Update, handle_mouse_clicks)
         /*
         // Add our gameplay simulation systems to the fixed timestep schedule
         // which runs at 64 Hz by default
@@ -108,6 +109,21 @@ fn setup(mut commands: Commands) {
     }
 }
 
+fn handle_mouse_clicks(
+    mouse_input: Res<ButtonInput<MouseButton>>,
+    windows: Query<&mut Window, With<PrimaryWindow>>,
+    cameras: Query<(&Camera, &GlobalTransform)>,
+) {
+    let window = windows.single();
+    let (camera, camera_transform) = cameras.single();
+    let op_world_cursor_position = window.cursor_position().and_then(|viewport_position| {
+        camera.viewport_to_world_2d(camera_transform, viewport_position)
+    });
+
+    if mouse_input.just_released(MouseButton::Left) {
+        println!("click at {:?}", op_world_cursor_position.unwrap());
+    }
+}
 /*
 fn get_input() -> usize {
     let mut cmd = String::new();
