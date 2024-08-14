@@ -1,9 +1,13 @@
 mod cliio;
+use bevy::math::bounding::BoundingVolume;
 use bevy::{
+    math::bounding::Aabb2d,
     prelude::*,
     window::{PrimaryWindow, WindowMode, WindowResolution},
 };
-use mancala::board::NUM_POCKETS;
+use mancala::board::{Position, NUM_POCKETS};
+use mancala::player::Player;
+use std::collections::HashMap;
 /*
 use mancala::board::{Board, Position, NUM_POCKETS};
 use mancala::game::{select, Turn};
@@ -65,6 +69,11 @@ fn main() {
         .run();
 }
 
+#[derive(Resource)]
+struct Coordinates {
+    buttons: HashMap<Position, Aabb2d>,
+}
+
 fn setup(mut commands: Commands) {
     // Spawn a 2D camera
     commands.spawn(Camera2dBundle::default());
@@ -73,16 +82,25 @@ fn setup(mut commands: Commands) {
     let margin = 2.0;
     let color = Color::srgb(0.5, 0.5, 1.0);
 
+    let mut buttons = HashMap::<Position, Aabb2d>::new();
+
     // Stores
     for i in [-1., 1.] {
+        let center = Vec2::new(i * (-WINDOW_X / 2. + pocket_size / 2.), 0.);
+        let size = Vec2::new(pocket_size - margin, 2. * pocket_size - margin);
+        let position = Position::Store {
+            player: if i == -1.0 { Player::A } else { Player::B },
+        };
+        buttons.insert(position, Aabb2d::new(center, size / 2.0));
+
         commands.spawn(SpriteBundle {
             sprite: Sprite {
                 color: color,
                 ..default()
             },
             transform: Transform {
-                translation: Vec2::new(i * (-WINDOW_X / 2. + pocket_size / 2.), 0.).extend(0.0),
-                scale: Vec3::new(pocket_size - margin, 2. * pocket_size - margin, 0.0),
+                translation: center.extend(0.0),
+                scale: size.extend(0.),
                 ..default()
             },
             ..default()
@@ -93,26 +111,36 @@ fn setup(mut commands: Commands) {
     for i in 0..NUM_POCKETS {
         for j in [-1., 1.] {
             let center_x = -WINDOW_X / 2. + ((i + 1) as f32 * pocket_size) + pocket_size / 2.;
+            let center = Vec2::new(j * center_x, -j * pocket_size / 2.);
+            let size = Vec2::new(pocket_size - margin, pocket_size - margin);
+            let position = Position::Pocket {
+                player: if j == -1. { Player::B } else { Player::A },
+                idx: i,
+            };
+            buttons.insert(position, Aabb2d::new(center, size / 2.0));
+
             commands.spawn(SpriteBundle {
                 sprite: Sprite {
                     color: color,
                     ..default()
                 },
                 transform: Transform {
-                    translation: Vec2::new(center_x, j * pocket_size / 2.).extend(0.),
-                    scale: Vec3::new(pocket_size - margin, pocket_size - margin, 0.0),
+                    translation: center.extend(0.),
+                    scale: size.extend(0.),
                     ..default()
                 },
                 ..default()
             });
         }
     }
+    commands.insert_resource(Coordinates { buttons });
 }
 
 fn handle_mouse_clicks(
     mouse_input: Res<ButtonInput<MouseButton>>,
     windows: Query<&mut Window, With<PrimaryWindow>>,
     cameras: Query<(&Camera, &GlobalTransform)>,
+    coordinates: Res<Coordinates>,
 ) {
     let window = windows.single();
     let (camera, camera_transform) = cameras.single();
@@ -121,7 +149,13 @@ fn handle_mouse_clicks(
     });
 
     if mouse_input.just_released(MouseButton::Left) {
-        println!("click at {:?}", op_world_cursor_position.unwrap());
+        let pos = op_world_cursor_position.unwrap();
+        println!("click at {:?}", pos);
+        for (position, aabb2d) in &coordinates.buttons {
+            if aabb2d.contains(&Aabb2d::new(pos, Vec2::new(1e-5, 1e-5))) {
+                println!("{:?}", position);
+            }
+        }
     }
 }
 /*
