@@ -4,7 +4,7 @@ use std::ops::Index;
 pub const NUM_POCKETS: usize = 6;
 const INITIAL_STONE_COUNT: i32 = 4;
 
-#[derive(Clone, PartialEq, Debug, Copy)]
+#[derive(Clone, PartialEq, Eq, Debug, Copy, Hash)]
 pub enum Position {
     Store { player: Player },
     Pocket { player: Player, idx: usize },
