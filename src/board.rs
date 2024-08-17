@@ -39,7 +39,7 @@ impl Iterator for PositionIter {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Board {
     pub data: [i32; ((NUM_POCKETS + 1) * 2) as usize],
 }

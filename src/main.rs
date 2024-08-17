@@ -6,13 +6,12 @@ use bevy::{
     text::{BreakLineOn, Text2dBounds},
     window::{PrimaryWindow, WindowMode, WindowResolution},
 };
-use mancala::board::{Position, NUM_POCKETS};
+use mancala::board::{Board, Position, NUM_POCKETS};
+use mancala::game::{select, Turn};
 use mancala::player::Player;
 use std::collections::HashMap;
 /*
 use mancala::board::{Board, Position, NUM_POCKETS};
-use mancala::game::{select, Turn};
-use mancala::player::Player;
 use std::io;
  */
 
@@ -74,6 +73,12 @@ fn main() {
 struct Coordinates {
     buttons: HashMap<Position, Aabb2d>,
 }
+
+#[derive(Resource, Debug)]
+struct BoardRes(Board);
+
+#[derive(Resource, Debug)]
+struct TurnRes(Turn);
 
 fn setup(mut commands: Commands) {
     // Spawn a 2D camera
@@ -156,14 +161,20 @@ fn setup(mut commands: Commands) {
                 });
         }
     }
+
     commands.insert_resource(Coordinates { buttons });
+    commands.insert_resource(BoardRes(Board::new()));
+    commands.insert_resource(TurnRes(Turn::InProgress { next: Player::A }));
 }
 
 fn handle_mouse_clicks(
+    mut commands: Commands,
     mouse_input: Res<ButtonInput<MouseButton>>,
     windows: Query<&mut Window, With<PrimaryWindow>>,
     cameras: Query<(&Camera, &GlobalTransform)>,
     coordinates: Res<Coordinates>,
+    board: ResMut<BoardRes>,
+    turn: ResMut<TurnRes>,
 ) {
     let window = windows.single();
     let (camera, camera_transform) = cameras.single();
@@ -176,11 +187,17 @@ fn handle_mouse_clicks(
         println!("click at {:?}", pos);
         for (position, aabb2d) in &coordinates.buttons {
             if aabb2d.contains(&Aabb2d::new(pos, Vec2::new(1e-5, 1e-5))) {
+                // TODO: Check turn
                 println!("{:?}", position);
+                let (turn, new_board) = select(&board.0, position);
+                println!("{:?}, {:?}", new_board, turn);
+                commands.insert_resource(BoardRes(new_board));
+                commands.insert_resource(TurnRes(turn));
             }
         }
     }
 }
+
 /*
 fn get_input() -> usize {
     let mut cmd = String::new();
