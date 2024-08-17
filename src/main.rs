@@ -3,6 +3,7 @@ use bevy::math::bounding::BoundingVolume;
 use bevy::{
     math::bounding::Aabb2d,
     prelude::*,
+    text::{BreakLineOn, Text2dBounds},
     window::{PrimaryWindow, WindowMode, WindowResolution},
 };
 use mancala::board::{Position, NUM_POCKETS};
@@ -84,6 +85,12 @@ fn setup(mut commands: Commands) {
 
     let mut buttons = HashMap::<Position, Aabb2d>::new();
 
+    let text_style = TextStyle {
+        font_size: 0.3 * pocket_size,
+        color: Color::WHITE,
+        ..default()
+    };
+
     // Stores
     for i in [-1., 1.] {
         let center = Vec2::new(i * (-WINDOW_X / 2. + pocket_size / 2.), 0.);
@@ -119,18 +126,34 @@ fn setup(mut commands: Commands) {
             };
             buttons.insert(position, Aabb2d::new(center, size / 2.0));
 
-            commands.spawn(SpriteBundle {
-                sprite: Sprite {
-                    color: color,
-                    custom_size: Some(size),
+            commands
+                .spawn(SpriteBundle {
+                    sprite: Sprite {
+                        color: color,
+                        custom_size: Some(size),
+                        ..default()
+                    },
+                    transform: Transform {
+                        translation: center.extend(0.),
+                        ..default()
+                    },
                     ..default()
-                },
-                transform: Transform {
-                    translation: center.extend(0.),
-                    ..default()
-                },
-                ..default()
-            });
+                })
+                .with_children(|builder| {
+                    builder.spawn(Text2dBundle {
+                        text: Text {
+                            sections: vec![TextSection::new(
+                                "0", // TODO: Show the actual number
+                                text_style.clone(),
+                            )],
+                            justify: JustifyText::Left,
+                            linebreak_behavior: BreakLineOn::WordBoundary,
+                        },
+                        text_2d_bounds: Text2dBounds { size: size },
+                        transform: Transform::from_translation(Vec3::Z),
+                        ..default()
+                    });
+                });
         }
     }
     commands.insert_resource(Coordinates { buttons });
