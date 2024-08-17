@@ -50,6 +50,7 @@ fn main() {
         */
         .add_systems(Startup, setup)
         .add_systems(Update, handle_mouse_clicks)
+        .add_systems(Update, update_label)
         /*
         // Add our gameplay simulation systems to the fixed timestep schedule
         // which runs at 64 Hz by default
@@ -79,6 +80,9 @@ struct BoardRes(Board);
 
 #[derive(Resource, Debug)]
 struct TurnRes(Turn);
+
+#[derive(Component)]
+struct PositionComp(Position);
 
 fn setup(mut commands: Commands) {
     // Spawn a 2D camera
@@ -115,6 +119,7 @@ fn setup(mut commands: Commands) {
                 translation: center.extend(0.0),
                 ..default()
             },
+
             ..default()
         });
     }
@@ -145,19 +150,25 @@ fn setup(mut commands: Commands) {
                     ..default()
                 })
                 .with_children(|builder| {
-                    builder.spawn(Text2dBundle {
-                        text: Text {
-                            sections: vec![TextSection::new(
-                                "0", // TODO: Show the actual number
-                                text_style.clone(),
-                            )],
-                            justify: JustifyText::Left,
-                            linebreak_behavior: BreakLineOn::WordBoundary,
+                    builder.spawn((
+                        Text2dBundle {
+                            text: Text {
+                                sections: vec![TextSection::new(
+                                    "0", // TODO: Show the actual number
+                                    text_style.clone(),
+                                )],
+                                justify: JustifyText::Left,
+                                linebreak_behavior: BreakLineOn::WordBoundary,
+                            },
+                            text_2d_bounds: Text2dBounds { size: size },
+                            transform: Transform::from_translation(Vec3::Z),
+                            ..default()
                         },
-                        text_2d_bounds: Text2dBounds { size: size },
-                        transform: Transform::from_translation(Vec3::Z),
-                        ..default()
-                    });
+                        PositionComp(Position::Pocket {
+                            player: if j == -1. { Player::B } else { Player::A },
+                            idx: i,
+                        }),
+                    ));
                 });
         }
     }
@@ -165,6 +176,18 @@ fn setup(mut commands: Commands) {
     commands.insert_resource(Coordinates { buttons });
     commands.insert_resource(BoardRes(Board::new()));
     commands.insert_resource(TurnRes(Turn::InProgress { next: Player::A }));
+}
+
+fn update_label(board: Res<BoardRes>, mut query: Query<(&mut Text, &PositionComp)>) {
+    for (mut text, position) in &mut query {
+        *text = Text {
+            sections: vec![TextSection::new(
+                board.0[position.0].to_string(),
+                text.sections[0].style.clone(),
+            )],
+            ..*text
+        }
+    }
 }
 
 fn handle_mouse_clicks(
