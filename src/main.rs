@@ -96,18 +96,18 @@ fn setup(mut commands: Commands) {
         commands.spawn(SpriteBundle {
             sprite: Sprite {
                 color: color,
+                custom_size: Some(size),
                 ..default()
             },
             transform: Transform {
                 translation: center.extend(0.0),
-                scale: size.extend(0.),
                 ..default()
             },
             ..default()
         });
     }
 
-    // pockets
+    // Pockets
     for i in 0..NUM_POCKETS {
         for j in [-1., 1.] {
             let center_x = -WINDOW_X / 2. + ((i + 1) as f32 * pocket_size) + pocket_size / 2.;
@@ -122,11 +122,11 @@ fn setup(mut commands: Commands) {
             commands.spawn(SpriteBundle {
                 sprite: Sprite {
                     color: color,
+                    custom_size: Some(size),
                     ..default()
                 },
                 transform: Transform {
                     translation: center.extend(0.),
-                    scale: size.extend(0.),
                     ..default()
                 },
                 ..default()
