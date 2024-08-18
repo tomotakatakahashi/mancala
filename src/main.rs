@@ -173,12 +173,28 @@ fn setup(mut commands: Commands) {
     commands.insert_resource(TurnRes(Turn::InProgress { next: Player::A }));
 }
 
-fn update_label(board: Res<BoardRes>, mut query: Query<(&mut Text, &PositionComp)>) {
+fn update_label(
+    board: Res<BoardRes>,
+    mut query: Query<(&mut Text, &PositionComp)>,
+    turn: Res<TurnRes>,
+) {
     for (mut text, position) in &mut query {
         *text = Text {
             sections: vec![TextSection::new(
                 board.0[position.0].to_string(),
-                text.sections[0].style.clone(),
+                TextStyle {
+                    color: match (turn.0, position.0) {
+                        (Turn::InProgress { next }, Position::Pocket { player, idx }) => {
+                            if next == player {
+                                Color::linear_rgb(0.8, 0.5, 0.2)
+                            } else {
+                                Color::WHITE
+                            }
+                        }
+                        _ => Color::WHITE,
+                    },
+                    ..text.sections[0].style.clone()
+                },
             )],
             ..*text
         }
