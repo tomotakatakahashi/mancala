@@ -1,6 +1,6 @@
-use mancala::board::{Board, Position, NUM_POCKETS};
-use mancala::game::{select, Turn};
-use mancala::player::Player;
+use mancala_logic::board::{Board, Position, NUM_POCKETS};
+use mancala_logic::game::{select, Turn};
+use mancala_logic::player::Player;
 use std::io;
 
 fn get_input() -> usize {
@@ -22,7 +22,7 @@ fn main() {
     let mut turn = Turn::InProgress { next: Player::A };
 
     loop {
-        cliio::print(&board);
+        mancala_cli::print(&board);
         match turn {
             Turn::InProgress { next } => {
                 let cmd = get_input();

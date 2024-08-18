@@ -1,5 +1,5 @@
-use mancala::board::{Board, Position, NUM_POCKETS};
-use mancala::player::Player;
+use mancala_logic::board::{Board, Position, NUM_POCKETS};
+use mancala_logic::player::Player;
 
 pub fn print(board: &Board) {
     let pos = Position::Store { player: Player::B };

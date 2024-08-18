@@ -2320,13 +2320,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "mancala"
-version = "0.1.0"
-dependencies = [
- "bevy",
-]
-
-[[package]]
 name = "mancala-bevy"
 version = "0.1.0"
 dependencies = [
@@ -2335,6 +2328,13 @@ dependencies = [
 
 [[package]]
 name = "mancala-cli"
+version = "0.1.0"
+dependencies = [
+ "mancala-logic",
+]
+
+[[package]]
+name = "mancala-logic"
 version = "0.1.0"
 
 [[package]]
