@@ -182,7 +182,7 @@ fn update_label(
                 board.0[position.0].to_string(),
                 TextStyle {
                     color: match (turn.0, position.0) {
-                        (Turn::InProgress { next }, Position::Pocket { player, idx }) => {
+                        (Turn::InProgress { next }, Position::Pocket { player, .. }) => {
                             if next == player {
                                 Color::linear_rgb(0.8, 0.5, 0.2)
                             } else {
@@ -201,7 +201,7 @@ fn update_label(
 
 fn handle_game_over(mut commands: Commands, turn: Res<TurnRes>) {
     match turn.0 {
-        Turn::InProgress { next } => (),
+        Turn::InProgress { .. } => (),
         Turn::Finished { winner } => {
             commands.spawn(Text2dBundle {
                 text: Text {
