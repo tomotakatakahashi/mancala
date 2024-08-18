@@ -211,7 +211,7 @@ fn handle_mouse_clicks(
                             commands.insert_resource(TurnRes(new_turn));
                         }
                     }
-                    _ => break,
+                    _ => (),
                 }
             }
         }
