@@ -150,10 +150,7 @@ fn setup(mut commands: Commands) {
                     builder.spawn((
                         Text2dBundle {
                             text: Text {
-                                sections: vec![TextSection::new(
-                                    "0", // TODO: Show the actual number
-                                    text_style.clone(),
-                                )],
+                                sections: vec![TextSection::new("0", text_style.clone())],
                                 justify: JustifyText::Left,
                                 linebreak_behavior: BreakLineOn::WordBoundary,
                             },
