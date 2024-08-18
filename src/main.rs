@@ -48,6 +48,7 @@ fn main() {
         .add_systems(Startup, setup)
         .add_systems(Update, handle_mouse_clicks)
         .add_systems(Update, update_label)
+        .add_systems(Update, handle_game_over)
         /*
         // Add our gameplay simulation systems to the fixed timestep schedule
         // which runs at 64 Hz by default
@@ -180,6 +181,29 @@ fn update_label(board: Res<BoardRes>, mut query: Query<(&mut Text, &PositionComp
                 text.sections[0].style.clone(),
             )],
             ..*text
+        }
+    }
+}
+
+fn handle_game_over(mut commands: Commands, turn: Res<TurnRes>) {
+    match turn.0 {
+        Turn::InProgress { next } => (),
+        Turn::Finished { winner } => {
+            commands.spawn(Text2dBundle {
+                text: Text {
+                    sections: vec![TextSection::new(
+                        format!("Player {winner:?} won!"),
+                        TextStyle {
+                            font_size: WINDOW_X / 20.0,
+                            color: Color::WHITE,
+                            ..default()
+                        },
+                    )],
+                    ..default()
+                },
+                transform: Transform::from_translation(2. * Vec3::Z),
+                ..default()
+            });
         }
     }
 }
