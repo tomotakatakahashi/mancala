@@ -12,8 +12,6 @@ use mancala::player::Player;
 use std::collections::HashMap;
 // use std::io;
 
-// TODO: add menu plugin and result plugin
-
 // 16:9
 const WINDOW_X: f32 = 512.0;
 const WINDOW_Y: f32 = 288.0;
