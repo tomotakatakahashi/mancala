@@ -10,10 +10,7 @@ use mancala::board::{Board, Position, NUM_POCKETS};
 use mancala::game::{select, Turn};
 use mancala::player::Player;
 use std::collections::HashMap;
-/*
-use mancala::board::{Board, Position, NUM_POCKETS};
-use std::io;
- */
+// use std::io;
 
 // TODO: add menu plugin and result plugin
 
