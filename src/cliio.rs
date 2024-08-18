@@ -6,7 +6,6 @@ pub fn print(board: &Board) {
     let count = board[pos];
     print!("{count}");
     for i in (0..NUM_POCKETS).rev() {
-        // TODO: Define an iterator
         let pos = Position::Pocket {
             player: Player::B,
             idx: i,
