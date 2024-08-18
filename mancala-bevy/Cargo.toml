@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 bevy = "0.14.1"
+mancala-logic = { path = "../mancala-logic" }
 
 [profile.dev]
 opt-level = 1

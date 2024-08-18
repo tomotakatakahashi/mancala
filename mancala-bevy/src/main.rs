@@ -1,4 +1,3 @@
-mod cliio;
 use bevy::math::bounding::BoundingVolume;
 use bevy::{
     math::bounding::Aabb2d,
@@ -6,9 +5,9 @@ use bevy::{
     text::{BreakLineOn, Text2dBounds},
     window::{PrimaryWindow, WindowMode, WindowResolution},
 };
-use mancala::board::{Board, Position, NUM_POCKETS};
-use mancala::game::{select, Turn};
-use mancala::player::Player;
+use mancala_logic::board::{Board, Position, NUM_POCKETS};
+use mancala_logic::game::{select, Turn};
+use mancala_logic::player::Player;
 use std::collections::HashMap;
 
 // 16:9 for mobile

@@ -2324,6 +2324,7 @@ name = "mancala-bevy"
 version = "0.1.0"
 dependencies = [
  "bevy",
+ "mancala-logic",
 ]
 
 [[package]]
