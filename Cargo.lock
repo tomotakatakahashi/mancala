@@ -2327,6 +2327,17 @@ dependencies = [
 ]
 
 [[package]]
+name = "mancala-bevy"
+version = "0.1.0"
+dependencies = [
+ "bevy",
+]
+
+[[package]]
+name = "mancala-cli"
+version = "0.1.0"
+
+[[package]]
 name = "matchers"
 version = "0.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
