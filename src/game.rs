@@ -1,7 +1,7 @@
 use crate::board::{Board, Position, PositionIter, NUM_POCKETS};
 use crate::player::Player;
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Copy, Clone)]
 pub enum Turn {
     InProgress { next: Player },
     Finished { winner: Player },

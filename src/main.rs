@@ -201,15 +201,18 @@ fn handle_mouse_clicks(
 
     if mouse_input.just_released(MouseButton::Left) {
         let pos = op_world_cursor_position.unwrap();
-        println!("click at {:?}", pos);
         for (position, aabb2d) in &coordinates.buttons {
             if aabb2d.contains(&Aabb2d::new(pos, Vec2::new(1e-5, 1e-5))) {
-                // TODO: Check turn
-                println!("{:?}", position);
-                let (turn, new_board) = select(&board.0, position);
-                println!("{:?}, {:?}", new_board, turn);
-                commands.insert_resource(BoardRes(new_board));
-                commands.insert_resource(TurnRes(turn));
+                match (position, turn.0) {
+                    (Position::Pocket { player, .. }, Turn::InProgress { next }) => {
+                        if *player == next {
+                            let (new_turn, new_board) = select(&board.0, &position);
+                            commands.insert_resource(BoardRes(new_board));
+                            commands.insert_resource(TurnRes(new_turn));
+                        }
+                    }
+                    _ => break,
+                }
             }
         }
     }
