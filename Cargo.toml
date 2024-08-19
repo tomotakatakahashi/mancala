@@ -1,7 +1,20 @@
 [workspace]
 
+resolver = "2"
+
 members = [
     "mancala-logic",
     "mancala-cli",
     "mancala-bevy"
 ]
+
+[profile.dev]
+opt-level = 1
+
+[profile.dev.package."*"]
+opt-level = 3
+
+[profile.release]
+opt-level = 'z'
+lto = true
+codegen-units = 1
