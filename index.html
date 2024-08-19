@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Mancala</title>
+  
+<link rel="modulepreload" href="/mancala-bevy-88e8532e76acac.js" crossorigin=anonymous integrity="sha384-nfHv3b03YF6hUzMtOiBMqvUHOPhv20r/9fWnOdfmzbsuN0Uk9R9pV7xO6ns+Q+oK">
+<link rel="preload" href="/mancala-bevy-88e8532e76acac_bg.wasm" crossorigin=anonymous integrity="sha384-D1bVRvnwjA8adwDdggTCjC8hDFb9bF7k0z8l51PILorPK9td7ESLo5D8ocxz0jAa" as="fetch" type="application/wasm"></head>
+  <body>
+<script type="module" nonce="WmI6qj5E2ILCx4i7Y9rEvA==">
+import init, * as bindings from '/mancala-bevy-88e8532e76acac.js';
+const wasm = await init('/mancala-bevy-88e8532e76acac_bg.wasm');
+
+
+window.wasmBindings = bindings;
+
+
+dispatchEvent(new CustomEvent("TrunkApplicationStarted", {detail: {wasm}}));
+
+</script></body>
+</html>
